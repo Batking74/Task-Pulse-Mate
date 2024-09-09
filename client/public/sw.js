@@ -1,9 +1,11 @@
 const assets = [
     '/',
     '/index.html',
-    '/assets/index.min.css',
-    '/assets/index.min.js',
-    '/manifest.json'
+    '/assets/index-tHFfWUSE.css',
+    '/assets/index-CM-Le05u.js',
+    '/manifest.json',
+    'http://unpkg.com/boxicons@2.1.4/svg/regular/bx-check.svg',
+    'http://unpkg.com/boxicons@2.1.4/svg/regular/bx-trash.svg'
 ];
 
 
