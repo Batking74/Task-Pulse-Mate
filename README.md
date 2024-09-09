@@ -22,6 +22,6 @@
 - Vite
 - Sass/Scss
 
-Deployed Site: 
+Deployed Site: https://task-pulse-mate.onrender.com
 
-GitHub Repo: 
+GitHub Repo: https://github.com/Batking74/Task-Pulse-Mate
