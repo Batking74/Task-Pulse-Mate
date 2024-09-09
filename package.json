@@ -1,0 +1,13 @@
+{
+  "name": "task-pulse-mate",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd client && npm run dev",
+    "build": "cd client && npm run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

@@ -1,0 +1,10 @@
+$background: linear-gradient(90deg, #3f0000, #141010, #3f0000)
+$primary-color: #000
+$secondary-color: #4A4D57
+$accent-color: #ff0000b1
+$text-color: #F9F9F9
+
+// Blueprint for creating responsive Components and Elements
+@mixin mediaQuery($width)
+    @media screen and (max-width: $width)
+        @content

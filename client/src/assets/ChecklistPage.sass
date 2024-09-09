@@ -1,0 +1,111 @@
+@import './Mixins'
+$breakpoint1: 500px
+
+#MelonEShield-Container
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+    font-size: 16pt
+    color: $text-color
+    min-height: 100vh
+    padding: 10px
+    background: $background
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    @include mediaQuery($breakpoint1)
+        font-size: 12pt
+    h1
+        margin: 50px 0 50px 0
+        font-size: 3rem
+        font-weight: 800
+        text-transform: uppercase
+        text-align: center
+        color: $accent-color
+        @include mediaQuery($breakpoint1)
+            margin-top: 50px
+            font-size: 2rem
+    .wrapper
+        width: 700px
+        max-width: 100%
+        display: flex
+        flex-direction: column
+        gap: 10px
+        #Checklist-form
+            position: relative
+            #create-SecurityMeasure-input
+                padding: 12px 20px
+                width: 100%
+                background: none
+                border: 2px solid $secondary-color
+                border-radius: 1000px
+                font: inherit
+                color: $text-color
+                caret-color: $accent-color
+                &:focus
+                    outline: none
+            #create-button
+                position: absolute
+                top: 0
+                right: 0
+                background: $accent-color
+                height: 100%
+                padding: 0 30px
+                border: none
+                border-radius: 1000px
+                font: inherit
+                font-weight: 600
+                color: $background
+                cursor: pointer
+                @include mediaQuery($breakpoint1)
+                    position: unset
+                    width: 100%
+                    margin-top: 10px
+                    padding: 15px
+                    height: auto
+        #Security-Checklist
+            .SecurityMeasure
+                margin-bottom: 10px
+                padding: 0 16px
+                background: $primary-color
+                border-radius: 15px
+                display: flex
+                align-items: center
+                input[type="checkbox"]
+                    display: none
+                    &:checked ~ .custom-checkbox
+                        background: $accent-color
+                    &:checked ~ .custom-checkbox box-icon
+                        fill: $primary-color
+                    &:checked ~ .SecurityMeasure-text
+                        text-decoration: line-through
+                        color: $secondary-color
+                .custom-checkbox
+                    border: 2px solid $accent-color
+                    border-radius: 50%
+                    min-height: 20px
+                    min-width: 20px
+                    display: flex
+                    justify-content: center
+                    align-items: center
+                    flex-shrink: 0
+                    fill: transparent
+                .SecurityMeasure-text
+                    padding: 15px 0 15px 15px
+                    flex-grow: 1
+                    transition: 200ms ease
+                .delete-button
+                    padding: 3px
+                    background: none
+                    border: none
+                    display: flex
+                    justify-content: center
+                    align-items: center
+                    cursor: pointer
+                    &:hover box-icon
+                        transform: scale(1.2)
+                    box-icon
+                        transition: 0.5s ease-in-out
+
+.checked
+    text-decoration: line-through
+    color: $secondary-color
