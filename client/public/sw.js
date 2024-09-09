@@ -4,8 +4,7 @@ const assets = [
     '/assets/index-tHFfWUSE.css',
     '/assets/index-CM-Le05u.js',
     '/manifest.json',
-    'https://unpkg.com/boxicons@2.1.4/svg/regular/bx-check.svg',
-    'https://unpkg.com/boxicons@2.1.4/svg/regular/bx-trash.svg'
+    'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js'
 ];
 
 
