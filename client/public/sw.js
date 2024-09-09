@@ -4,12 +4,14 @@ const assets = [
     '/assets/index-tHFfWUSE.css',
     '/assets/index-CM-Le05u.js',
     '/manifest.json',
-    'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js'
+    'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
+    'https://unpkg.com/boxicons@2.1.4/svg/regular/bx-check.svg',
+    'https://unpkg.com/boxicons@2.1.4/svg/regular/bx-trash.svg'
 ];
 
 
-const dynamicCacheName = 'site-dynamic';
-const staticCacheName = 'site-static';
+const dynamicCacheName = 'site-dynamic-v1';
+const staticCacheName = 'site-static-v1';
 
 
 // Cache Size Limit Function
@@ -18,7 +20,7 @@ const limitCacheSize = (name, size) => {
         cache.keys().then(keys => {
             if (keys.length >= size) {
                 // Deleting the oldest Cache in the array
-                cache.delete(keys[0]).then(limitCacheSize(name, size))
+                cache.delete(keys[0]).then(limitCacheSize(name, size));
             }
         })
     })
@@ -31,10 +33,10 @@ self.addEventListener('install', async e => {
         const cache = await caches.open(staticCacheName);
         console.log('Caching Shell Assets');
         // addAll method goes out to the server gets the resources then puts it inside the cache.
-        cache.addAll(assets);
+        await cache.addAll(assets);
     }
     catch (error) {
-        console.error('Error occured when installing ', error.message);
+        console.error('Error occurred during installing: ', error);
         throw error;
     }
 });
