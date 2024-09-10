@@ -1,80 +1,144 @@
+const staticCacheName = 'site-cache-v1';
+const dynamicCacheName = 'site-dynamic-v1';
 const assets = [
     '/',
     '/index.html',
-    '/assets/index-tHFfWUSE.css',
-    '/assets/index-CM-Le05u.js',
+    '/Error.html',
     '/manifest.json',
-    'https://unpkg.com/boxicons@2.1.4/dist/boxicons.js',
-    'https://unpkg.com/boxicons@2.1.4/svg/regular/bx-check.svg',
-    'https://unpkg.com/boxicons@2.1.4/svg/regular/bx-trash.svg'
+    '/assets/index-BNquMB4d.js',
+    '/assets/index-tHFfWUSE.css'
 ];
 
+// Install Event
+self.addEventListener('install', event => event.waitUntil(handleInstall()));
 
-const dynamicCacheName = 'site-dynamic-v1';
-const staticCacheName = 'site-static-v1';
+// Activate Event
+self.addEventListener('activate', event => event.waitUntil(handleActivate()));
 
+// Fetch Event
+self.addEventListener('fetch', event => event.respondWith(handleFetch(event)));
 
-// Cache Size Limit Function
-const limitCacheSize = (name, size) => {
-    caches.open(name).then(cache => {
-        cache.keys().then(keys => {
-            if (keys.length >= size) {
-                // Deleting the oldest Cache in the array
-                cache.delete(keys[0]).then(limitCacheSize(name, size));
-            }
-        })
-    })
-}
-
-
-// Install Service Worker
-self.addEventListener('install', async e => {
+// Pre-Caching Assets
+async function handleInstall() {
     try {
         const cache = await caches.open(staticCacheName);
-        console.log('Caching Shell Assets');
-        // addAll method goes out to the server gets the resources then puts it inside the cache.
+        console.log('Caching assets during install');
         await cache.addAll(assets);
     }
     catch (error) {
-        console.error('Error occurred during installing: ', error);
-        throw error;
+        console.error('Failed to cache assets during install:', error);
     }
-});
+}
 
 
-// // Cache Versioning
-self.addEventListener('activate', e => {
-    e.waitUntil(
-        caches.keys().then(keys => {
-            return Promise.all(
-                keys.filter(key => key !== staticCacheName && key !== dynamicCacheName)
-                    .map(key => caches.delete(key))
-            );
-        })
-    );
-});
+async function handleActivate() {
+    try {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(cacheName => cacheName !== staticCacheName ? caches.delete(cacheName) : null));
+        console.log('Old caches cleaned up');
+    }
+    catch (error) {
+        console.error('Failed to clean up old caches:', error);
+    }
+}
 
 
-self.addEventListener('fetch', async e => {
-    e.respondWith(
-        // Example of a simple cache-first network-first strategy
-        // The service worker is checking the cache for a response and if it doesn't find it, it fetches it.
-        caches.match(e.request).then(res => {
-            return res || fetch(e.request.url).then(fetchres => {
-                return caches.open(dynamicCacheName).then(cache => {
-                    cache.put(e.request.url, fetchres.clone());
-                    // Making sure the cache isn't too large/bloating
-                    limitCacheSize(dynamicCacheName, 20);
-                    return fetchres;
-                })
-            })
-        }).catch(() => {
-            // Offline Fallback Page/Conditional Fallbacks
-            if (e.request.url.indexOf('.html') > -1) {
-                caches.match('/errorpage.html').then(res => {
-                    return res;
-                })
+async function handleFetch(event) {
+    try {
+        // Check if the request is in the Api Cache
+        const cache = await caches.match(event.request);
+        if (cache) return cache;
+
+        // Check if the request is in IndexDB
+        const cachedResponseBlob = await getCachedResponse(event.request.url);
+        if (cachedResponseBlob) return new Response(cachedResponseBlob);
+
+        // Fetch from the Network
+        const response = await fetch(event.request);
+        const cacheStore = await caches.open(staticCacheName);
+
+        // Cache to both IndexDB and Api Cache
+        await cacheStore.put(event.request, response.clone());
+        await cacheAPIResponse(event.request.url, await response.clone().blob());
+        return response;
+    }
+    catch (error) {
+        // Offline Fallback Page/Conditional Fallbacks
+        return caches.match('/Error.html');
+    }
+}
+
+
+
+
+// Database
+const storeName = 'APIResponses';
+
+function openDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('api-cache', 1);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(storeName)) db.createObjectStore(storeName, { keyPath: 'RequestURL' });
+        };
+        request.onsuccess = (event) => {
+            console.log('Api-Cache Database opened successfully!');
+            resolve(event.target.result);
+        }
+        request.onerror = (event) => {
+            console.error('Api-Cache Database error: ', event.target.errorCode);
+            reject(event.target.errorCode);
+        }
+    });
+}
+
+// Caches New APIResponse in indexDB
+function cacheAPIResponse(RequestURL, Response) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const database = await openDatabase();
+            const transaction = await database.transaction([storeName], 'readwrite');
+            const objectStore = await transaction.objectStore(storeName);
+            const request = await objectStore.put({ RequestURL, Response });
+
+            request.onsuccess = () => resolve('APIResponse Cached Successfully');
+            request.onerror = (event) => {
+                console.error('Error Caching APIResponse to indexDB:', event.target.errorCode);
+                reject(event.target.errorCode);
             }
-        })
-    );
-});
+        }
+        catch (error) {
+            console.error('Error in cacheAPIResponse Function:', error);
+            throw error;
+        }
+    });
+}
+
+// Retrieves an APIResponse if exists in indexDB
+function getCachedResponse(requestURL) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const database = await openDatabase();
+            const transaction = database.transaction([storeName], 'readonly');
+            const objectStore = transaction.objectStore(storeName);
+            const request = objectStore.get(requestURL);
+
+            request.onsuccess = () => {
+                if (request.result) {
+                    console.log('APIResponse Retrieved:', request.result);
+                    resolve(request.result.Response);
+                }
+                else resolve(null);
+                resolve(request.result);
+            }
+            request.onerror = (event) => {
+                console.error('Error Retrieving APIResponse:', event.target.errorCode);
+                reject(event.target.errorCode);
+            }
+        }
+        catch (error) {
+            console.error('Error in Opening Database in getCachedResponse() Function:', error);
+            throw error;
+        }
+    });
+}

@@ -10,49 +10,49 @@
     "orientation": "portrait-primary",
     "icons": [
         {
-            "src": "/manifest_Icons/Portfolio_Icon-72X72.png",
+            "src": "/manifest_Icons/Task-Pulse-Mate-Icon-72X72.png",
             "type": "image/png",
             "sizes": "72x72",
             "purpose": "maskable"
         },
         {
-            "src": "/manifest_Icons/Portfolio_Icon-96X96.png",
+            "src": "/manifest_Icons/Task-Pulse-Mate-Icon-96X96.png",
             "type": "image/png",
             "sizes": "96x96",
             "purpose": "maskable"
         },
         {
-            "src": "/manifest_Icons/Portfolio_Icon-128X128.png",
+            "src": "/manifest_Icons/Task-Pulse-Mate-Icon-128X128.png",
             "type": "image/png",
             "sizes": "128x128",
             "purpose": "maskable"
         },
         {
-            "src": "/manifest_Icons/Portfolio_Icon-144X144.png",
+            "src": "/manifest_Icons/Task-Pulse-Mate-Icon-144X144.png",
             "type": "image/png",
             "sizes": "144x144",
             "purpose": "any"
         },
         {
-            "src": "/manifest_Icons/Portfolio_Icon-152X152.png",
+            "src": "/manifest_Icons/Task-Pulse-Mate-Icon-152X152.png",
             "type": "image/png",
             "sizes": "152x152",
             "purpose": "maskable"
         },
         {
-            "src": "/manifest_Icons/Portfolio_Icon-192X192.png",
+            "src": "/manifest_Icons/Task-Pulse-Mate-Icon-192X192.png",
             "type": "image/png",
             "sizes": "192x192",
             "purpose": "maskable"
         },
         {
-            "src": "/manifest_Icons/Portfolio_Icon-384X384.png",
+            "src": "/manifest_Icons/Task-Pulse-Mate-Icon-384X384.png",
             "type": "image/png",
             "sizes": "384x384",
             "purpose": "maskable"
         },
         {
-            "src": "/manifest_Icons/Portfolio_Icon-512X512.png",
+            "src": "/manifest_Icons/Task-Pulse-Mate-Icon-512X512.png",
             "type": "image/png",
             "sizes": "512x512"
         }
